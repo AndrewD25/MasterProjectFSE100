@@ -1,116 +1,333 @@
-class Button {
-  /*constructor(screen, x, y, width, height, text, textSize) {
-    this.screen = screen;
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.text = text;
-    this.textSize = textSize;
-  }*/
+let navBarGradient;                 // Gradient for the navigation bar
+let gameMenu = 0;                   // Game menu ID
+let gameMenuIsUp = false;           // Tracks if the game menu is up
 
-    constructor(screen, x, y, text, color) {
-      this.screen = screen;
-      this.x = x;
-      this.y = y;
-      this.text = text;
-      this.color = textSize;
-    }
+
+//Button Hover Detection
+let hitNavBar = false;
+
+// Defining menu buttons
+let mainMenuButton;
+let game1Button;
+let game2Button;
+let game3Button;
+let backButton;
+let homeButton;
+let navBarButton;
+let levelOneButton;
+let levelTwoButton;
+let levelThreeButton;
+let level = 1;
+
+//Preload images
+let mascot;
+let menuBackground;
+let gameOneVisual;
+
+function preload() {
+  mascot = loadImage('/assets/mascot.png');
+  menuBackground = loadImage('/assets/menuBackground.jpg');
+  gameOneVisual = loadImage('/assets/gameOneVisual.png');
+  gameTwoVisual = loadImage('/assets/gameTwoVisual.png');
+  gameThreeVisual = loadImage('/assets/gameThreeVisual.png');
 }
 
-/*function drawButton(btn) {
-  
-  //Create rect component
+function mousePressed() {
+  // Check which buttons are clicked based on the current page
+  if (currentPage === 0) {
+    mainMenuButton.checkClick();
+  } else if (currentPage === 1) {
+    game1Button.checkClick();
+    game2Button.checkClick();
+    game3Button.checkClick();
+    navBarButton.checkClick();
+  } else if (currentPage === 2 || currentPage === 3 || currentPage === 4) {
+    backButton.checkClick();
+    homeButton.checkClick();
+  }
 
-  rect(btn.x, btn.y, btn.width, btn.height);
+  if (gameMenuIsUp) {
+    levelOneButton.checkClick();
+    levelTwoButton.checkClick();
+    levelThreeButton.checkClick();
+  }
 
-  //Create text component
-  fill(0, 0, 0);
-  textAlign(CENTER, CENTER);
-  textSize(btn.textSize);
-  text(btn.text, btn.x, btn.y);
-
-}*/
-
-let screen = 0;
-//0 = mainß
-//1 = games menu
-//2-5 = each game
-
-// Initialize interactive elements //
-//const startBtn = new Button(0, 600, 550, 300, 150, "Start Games", 25);
-
-let game1Preview = {
-  screen: 0,
-  x: 0,
-  y: 0,
-  width: 100,
-  height: 100
 }
 
-// Main functions //
-
-  //////////////////////////////
- // Runs at start of program //
-//////////////////////////////
-function setup() { 
-  createCanvas(1200, 800);
+function onMainMenuClick() {
+  currentPage = 1;                  // Go to Main Menu
 }
 
-  //////////////////////
- // Runs every frame //
-//////////////////////
-function draw() { 
-  background(255, 255, 255);
-  
-  switch (screen) {
-    case 0:
-      mainMenu();
-      break;
+function onGame1Click() {
+  //window.open('game1.html', '_self');                     // Go to Game 1 page
+  gameMenu = 1;
+}
+
+function onGame2Click() {
+  //window.open('game2.html', '_self');                     // Go to Game 2 page
+  gameMenu = 2;
+}
+
+function onGame3Click() {
+  //window.open('game3.html', '_self');                     // Go to Game 3 page
+  gameMenu = 3;
+}
+
+function onBackClick() {
+  currentPage = 1;                  // Go back to the main menu
+}
+
+function onHomeClick() {
+  currentPage = 0;                  // Go back to the home page
+  gameMenu = 0;
+}
+
+function onNavBarClick() {
+  currentPage = 0;
+}
+
+function startGame() {
+  switch (gameMenu) {
     case 1:
-      gamesMenu();
+      window.open('game1.html', '_self');
+      break;
+    case 2:
+      window.open('game2.html', '_self');
+      break;
+    case 3:
+      window.open('game3.html', '_self');  
       break;
     default:
       break;
   }
-  
 }
 
-// User defined functions //
-
-function mainMenu() {
-  //Main menu (in an abstract form, has a title Text, a button Rect, and a character Image)
-  //text();
-  //image();
-
-  //stroke(0, 0, 0); //black
-  //drawButton(startBtn);
+function onLevelOneClick() {
+  localStorage.setItem("level", "1");
+  startGame();
 }
 
-function gamesMenu() {
-  
-  stroke(0, 0, 0); //black
-  
-  //Previews of the 3 games, vertical on left side
-  rect(0, 0, 100, 50);
-  rect(0, 70, 100, 50);
-  rect(0, 140, 100, 50);
+function onLevelTwoClick() {
+  localStorage.setItem("level", "2");
+  startGame();
 }
 
-function game1() {
-
+function onLevelThreeClick() {
+  localStorage.setItem("level", "3");
+  startGame();
 }
 
-function game2() {
+function setup() {
+  createCanvas(1400, 800);
+  // x, y, w, h, c, text, onClick
+  stroke("blue");
+  mainMenuButton = new Button(800, displayHeight / 2 - 50, 200, 100, 255, 'Play Games!', onMainMenuClick);
+  game1Button = new Button(100, 150, 200, 100, 255, 'Typing', onGame1Click);
+  game2Button = new Button(100, 350, 200, 100, 255, 'Brushing', onGame2Click);
+  game3Button = new Button(100, 550, 200, 100, 255, 'Writing', onGame3Click);
+  backButton = new Button(600, 550, 200, 100, 255, 'Back', onBackClick);
+  homeButton = new Button(850, 550, 200, 100, 255, 'Home', onHomeClick);
+  navBarButton = new Button(0, 0, 900, 70, 255, ' ', onHomeClick);
+  levelOneButton  = new Button(450, 500, 200, 150, 255, 'Level 1', onLevelOneClick);
+  levelTwoButton  = new Button(700, 500, 200, 150, 255, 'Level 2', onLevelTwoClick);
+  levelThreeButton  = new Button(950, 500, 200, 150, 255, 'Level 3', onLevelThreeClick);
 
+  //setup for the navbar gradient
+  navBarGradient = createLinearGradient(PI / 2, 70);
+  navBarGradient.colors(0, "blue", 1, color(99, 99, 255));
 }
 
-function game3() {
-  
-}
+function draw() {
+  background(255);                   // Clear the background each frame
 
-function mouseClicked() {
-  if (mouseX >= startBtn.x && mouseX <= startBtn.x + startBtn.width && mouseY >= startBtn.y && mouseY <= startBtn.y + startBtn.height) {
-    backgroundColor = random(["red", "yellow", "blue", "green"]);
+  // Switch statement to determine which page to display
+  switch (currentPage) {
+    case 0:
+      drawPage1();
+      break;
+    case 1:
+      drawPage2();
+      break;
+    case 2:
+      drawPage3();
+      break;
+    case 3:
+      drawPage4();
+      break;
+    case 4:
+      drawPage5();
+      break;
+    default:
+      break;
   }
+
+  // Switch statement to determine what details for which game to display on the game menu
+  switch (gameMenu) {
+    case 1:
+      gameMenuIsUp = true;
+      drawGameMenuBG();
+      gameOneDetails();
+      break;
+    case 2:
+      gameMenuIsUp = true;
+      drawGameMenuBG();
+      gameTwoDetails();
+      break;
+    case 3:
+      gameMenuIsUp = true;
+      drawGameMenuBG();
+      gameThreeDetails();
+      break;
+    default:
+      gameMenuIsUp = false;
+      break;
+  }
+
+  //Navbar
+  hitNavBar = collidePointRect(mouseX, mouseY, 0, 0, 900, 70);
+  navBar();
+}
+
+
+function navBar() {
+  fillGradient(navBarGradient);
+  rect(0, 0, 1200, 70);
+
+  fill((hitNavBar) ? color(200,200,200) : "white");
+  textSize(60);
+  text("Learn4Kids - Motor Skill Games", 450, 35);
+}
+
+function drawPage1() {
+  // Function to draw content for the home page
+  image(menuBackground, 0, 0);
+  textSize(80);
+  fill("blue");
+  text('Learn4Kids', 500, 200);
+  mainMenuButton.display();
+  image(mascot, 250, 400);
+}
+
+function drawPage2() {
+  // Function to draw content for the menu page
+  image(menuBackground, 0, 0);
+  textSize(32);
+  fill(255);
+  stroke(0);
+  strokeWeight(4);
+  text('Select a Game', 800, 400);
+  fill(0);
+  stroke("blue");
+  strokeWeight(1);
+  game1Button.display();
+  game2Button.display();
+  game3Button.display();
+  navBarButton.display();
+}
+
+function drawPage3() {
+  // Function to draw content for Game 1 page
+  textSize(32);
+  fill(0);
+  text('Typing', 600, 200);
+  backButton.display();
+  homeButton.display();
+}
+
+function drawPage4() {
+  // Function to draw content for Game 2 page
+  textSize(32);
+  fill(0);
+  text('Brushing', 600, 200);
+  backButton.display();
+  homeButton.display();
+}
+
+function drawPage5() {
+  // Function to draw content for Game 3 page
+  textSize(32);
+  fill(0);
+  text('Writing', 600, 200);
+  backButton.display();
+  homeButton.display();
+}
+
+function drawGameMenuBG() {
+  // Function to draw the rectangle bg for the game menu
+  fill(255);
+  stroke(0);
+  rect(425, 100, 750, 600, 20);
+  fill(0);
+  stroke("blue");
+}
+
+/*TODO: 
+-Replace the rectangles with the Game Visual text with actual images
+-Add how the game works for each game
+-Have the best score display actually work
+-Have the buttons that take you to different levels work*/
+
+//Set high score to N/A if non-existant
+let tscore = localStorage.getItem("typingScore");
+if (tscore === "null" || tscore === null) {
+  tscore = "N/A";
+}
+let bscore = localStorage.getItem("brushingScore");
+if (bscore === "null" || bscore === null) {
+  bscore = "N/A";
+}
+let wscore = localStorage.getItem("writingScore");
+if (wscore === "null" || wscore === null) {
+  wscore = "N/A";
+}
+
+function gameOneDetails() {
+  fill(255);
+  stroke(0);
+  rect(450, 150, 300, 300);
+  image(gameOneVisual, 450, 150);
+  fill(0);
+  textSize(32);
+  text('Game 1: Typing', 800, 125);
+  //text('Game Visual Idk', 600, 300);
+  text('Type the words on screen\nusing your keyboard!\n\nSpell the words correctly\n to win!', 960, 260);
+  text('Best Time: ' + tscore, 960, 425);
+  stroke("blue");
+  levelOneButton.display();
+  levelTwoButton.display();
+  levelThreeButton.display();
+}
+
+function gameTwoDetails() {
+  fill(255);
+  stroke(0);
+  rect(450, 150, 300, 300);
+  image(gameTwoVisual, 450, 150);
+  fill(0);
+  textSize(32);
+  text('Game 2: Brushing', 800, 125);
+  //text('Game Visual Idk', 600, 300);
+  text("Keep your teeth healthy!\nBrush away all the\n plaque to win!", 960, 220);
+  text('Best Score: ' + bscore, 960, 425);
+  stroke("blue");
+  levelOneButton.display();
+  levelTwoButton.display();
+  levelThreeButton.display();
+}
+
+function gameThreeDetails() {
+  fill(255);
+  stroke(0);
+  rect(450, 150, 300, 300);
+  image(gameThreeVisual, 450, 150);
+  fill(0);
+  textSize(32);
+  text('Game 3: Writing', 800, 125);
+  //text('Game Visual Idk', 600, 300);
+  text('Trace the letters,\ncollect all the starts to win!', 960, 200);
+  text('Best Score: ' + wscore, 960, 425);
+  stroke("blue");
+  levelOneButton.display();
+  levelTwoButton.display();
+  levelThreeButton.display();
 }
